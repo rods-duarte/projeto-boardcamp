@@ -19,13 +19,13 @@ export async function addGame(req, res) {
 
   try {
     await db.query(
-      `
+      `--sql
       INSERT INTO games (name, image, "stockTotal", "categoryId", "pricePerDay")
       VALUES ($1, $2, $3, $4, $5)
       `,
       [name, image, stockTotal, categoryId, pricePerDay]
     );
-    res.status(200).send('Adicionado com sucesso');
+    res.sendStatus(201);
   } catch (err) {
     console.log(`${ERROR} ${err}`);
     res.status(500).send({
