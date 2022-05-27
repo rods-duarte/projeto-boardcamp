@@ -5,6 +5,7 @@ import chalk from 'chalk';
 
 import gamesRouter from './routers/gamesRouter.js';
 import categoriesRouter from './routers/categoriesRouter.js';
+import customersRouter from './routers/customersRouter.js';
 
 dotenv.config('./src/config/config.env');
 
@@ -17,6 +18,7 @@ app.use(json());
 // routes
 app.use(gamesRouter);
 app.use(categoriesRouter);
+app.use(customersRouter);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
