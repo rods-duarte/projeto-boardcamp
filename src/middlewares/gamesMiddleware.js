@@ -18,10 +18,11 @@ export async function validateSchema(req, res, next) {
     console.log(
       `${ERROR} ${validate.error.details.map((e) => e.message).join(', ')}`
     );
-    return res.status(400).send({
+    res.status(400).send({
       message: 'Invalid input',
       details: `${validate.error.details.map((e) => e.message).join(', ')}`,
     });
+    return;
   }
 
   next();
