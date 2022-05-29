@@ -21,7 +21,6 @@ export async function getCustomers(req, res) {
 
 export async function getCustomerById(req, res) {
   const { id } = req.params;
-  console.log(id);
 
   try {
     const result = await db.query(
@@ -31,7 +30,6 @@ export async function getCustomerById(req, res) {
             `,
       [id]
     );
-    console.log(result);
 
     if (!result.rows.length) {
       res.sendStatus(404);

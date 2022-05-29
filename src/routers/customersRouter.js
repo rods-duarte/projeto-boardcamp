@@ -15,8 +15,6 @@ import {
 
 const customersRouter = Router();
 
-console.log(new Date('199-10-05'));
-
 customersRouter.get('/customers', getCustomers);
 customersRouter.get('/customers/:id', getCustomerById);
 customersRouter.post(

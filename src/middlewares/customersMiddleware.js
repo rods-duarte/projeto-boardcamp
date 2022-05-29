@@ -4,10 +4,13 @@ import CustomerSchema from '../models/customerSchema.js';
 
 export async function validateSchema(req, res, next) {
   const { body } = req;
+  body.birthday = body.birthday.slice(0, 10);
+  console.log(body);
 
   const validate = CustomerSchema.validate(body);
 
   if (validate.error) {
+    console.log('INVALIDO');
     res.status(400).send({
       message: 'Invalid input',
       details: `${validate.error.details.map((e) => e.message).join(', ')}`,
