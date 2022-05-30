@@ -119,3 +119,37 @@ export async function deleteRental(req, res) {
     });
   }
 }
+
+export async function getMetrics(req, res) {
+  const { startDate, endDate } = req.query;
+  let query;
+
+  try {
+    const result = await db.query(
+      `--sql
+        SELECT 
+        SUM("daysRented"*"originalPrice") as "rentTotal",
+        SUM("delayFee") as "delayFeeTotal",
+        COUNT(id) as rentals
+        FROM RENTALS;
+        `
+    );
+    console.log(result.rows[0]);
+
+    const { rentTotal, delayFeeTotal, rentals } = result.rows[0];
+    const revenue = Number(rentTotal) + Number(delayFeeTotal);
+    const average = (revenue / rentals).toFixed(2);
+
+    res.send({
+      rentals,
+      revenue,
+      average,
+    });
+  } catch (err) {
+    console.log(`${ERROR} ${err}`);
+    res.status(500).send({
+      message: 'Internal error',
+      details: err,
+    });
+  }
+}

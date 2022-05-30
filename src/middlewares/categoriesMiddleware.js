@@ -53,7 +53,7 @@ export async function categoryExists(req, res, next) {
   const { categoryId } = req.body;
 
   try {
-    const result = db.query(
+    const result = await db.query(
       `--sql
         SELECT * FROM categories
         WHERE id = $1
@@ -61,8 +61,11 @@ export async function categoryExists(req, res, next) {
       [categoryId]
     );
 
+    console.log(result);
     if (!result.rows.length) {
-      res.sendStatus(400);
+      res.status(400).send({
+        message: 'category not found',
+      });
       return;
     }
   } catch (err) {

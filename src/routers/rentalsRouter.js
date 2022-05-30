@@ -5,6 +5,7 @@ import {
   addRental,
   endRent,
   deleteRental,
+  getMetrics,
 } from '../controllers/rentalsController.js';
 
 // rentals middlewares
@@ -24,6 +25,7 @@ import { gameExists, checkGameStock } from '../middlewares/gamesMiddleware.js';
 const rentalsRouter = Router();
 
 rentalsRouter.get('/rentals', getRentalsQuerySQL, getRentals);
+rentalsRouter.get('/rentals/metrics', getMetrics);
 rentalsRouter.post(
   '/rentals',
   validateSchema,
