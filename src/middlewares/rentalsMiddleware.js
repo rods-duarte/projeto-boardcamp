@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
 
+import db from '../database/index.js';
+import { ERROR } from '../blueprint/chalkMessages.js';
+
 import RentalSchema from '../models/rentalSchema.js';
 
 export async function getRentalsQuerySQL(req, res, next) {
@@ -81,5 +84,36 @@ export async function validateSchema(req, res, next) {
   }
 
   res.locals.rental = rental;
+  next();
+}
+
+export async function rentalExists(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const result = await db.query(
+      `--sql
+        SELECT *
+        FROM rentals
+        WHERE id = $1`,
+      [id]
+    );
+
+    if (!result.rows.length) {
+      res.status(404).send({
+        message: 'Rental not found',
+      });
+      return;
+    }
+
+    [res.locals.rental] = result.rows;
+  } catch (err) {
+    console.log(`${ERROR} ${err}`);
+    res.status(500).send({
+      message: 'Internal error',
+      details: err,
+    });
+  }
+
   next();
 }

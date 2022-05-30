@@ -1,11 +1,16 @@
 import { Router } from 'express';
 
-import { getRentals, addRental } from '../controllers/rentalsController.js';
+import {
+  getRentals,
+  addRental,
+  endRent,
+} from '../controllers/rentalsController.js';
 
 // rentals middlewares
 import {
   getRentalsQuerySQL,
   validateSchema,
+  rentalExists,
 } from '../middlewares/rentalsMiddleware.js';
 
 // customers middlewares
@@ -25,7 +30,7 @@ rentalsRouter.post(
   checkGameStock,
   addRental
 );
-rentalsRouter.put('/rentals');
+rentalsRouter.post('/rentals/:id/return', rentalExists, endRent);
 rentalsRouter.delete('/rentals');
 
 export default rentalsRouter;
