@@ -50,15 +50,18 @@ export async function validateUniqueCpf(req, res, next) {
 }
 
 export async function customerExists(req, res, next) {
-  const { cpf } = req.body;
+  const { cpf, customerId } = req.body;
+
+  const key = cpf ? 'cpf' : 'id';
+  const value = cpf ?? customerId;
 
   try {
     const result = await db.query(
       `--sql
       SELECT * FROM customers
-      WHERE cpf = $1      
+      WHERE ${key} = $1      
       `,
-      [cpf]
+      [value]
     );
 
     if (!result.rows[0]) {
