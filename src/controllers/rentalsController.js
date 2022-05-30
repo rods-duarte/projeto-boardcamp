@@ -72,15 +72,8 @@ export async function addRental(req, res) {
 
 export async function endRent(req, res) {
   const { id } = req.params;
-  const { returnDate, daysRented, originalPrice, rentDate } = res.locals.rental;
+  const { daysRented, originalPrice, rentDate } = res.locals.rental;
   let delayFee = null;
-
-  if (returnDate) {
-    res.status(400).send({
-      message: 'Game has already been returned',
-    });
-  }
-
   const daysPassed = dayjs().diff(rentDate, 'day');
 
   if (daysPassed > daysRented) {
@@ -88,14 +81,41 @@ export async function endRent(req, res) {
     delayFee = excess * originalPrice;
   }
 
-  await db.query(
-    `--sql
-      UPDATE rentals
-      SET "delayFee" = $1, "returnDate" = $2
-      WHERE id = $3
-    `,
-    [delayFee, dayjs().format('YYYY-MM-DD'), id]
-  );
+  try {
+    await db.query(
+      `--sql
+        UPDATE rentals
+        SET "delayFee" = $1, "returnDate" = $2
+        WHERE id = $3
+      `,
+      [delayFee, dayjs().format('YYYY-MM-DD'), id]
+    );
+  } catch (err) {
+    console.log(`${ERROR} ${err}`);
+    res.status(500).send({
+      message: 'Internal error',
+      details: err,
+    });
+  }
 
   res.sendStatus(200);
+}
+
+export async function deleteRental(req, res) {
+  const { id } = req.params;
+
+  try {
+    await db.query(
+      `--sql
+        DELETE FROM rentals
+        WHERE id = $1`,
+      [id]
+    );
+  } catch (err) {
+    console.log(`${ERROR} ${err}`);
+    res.status(500).send({
+      message: 'Internal error',
+      details: err,
+    });
+  }
 }

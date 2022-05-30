@@ -117,3 +117,16 @@ export async function rentalExists(req, res, next) {
 
   next();
 }
+
+export async function isRentEnded(req, res, next) {
+  const { returnDate } = res.locals.rental;
+
+  if (returnDate) {
+    res.status(400).send({
+      message: 'Game has already been returned',
+    });
+    return;
+  }
+
+  next();
+}
