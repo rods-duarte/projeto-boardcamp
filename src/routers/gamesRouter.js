@@ -2,6 +2,8 @@ import { Router } from 'express';
 
 import { getGames, addGame } from '../controllers/gamesController.js';
 
+import { categoryExists } from '../middlewares/categoriesMiddleware.js';
+
 import {
   validateSchema,
   validateUniqueName,
@@ -10,6 +12,12 @@ import {
 const gamesRouter = Router();
 
 gamesRouter.get('/games', getGames);
-gamesRouter.post('/games', validateSchema, validateUniqueName, addGame); // TODO validar o id da categoria
+gamesRouter.post(
+  '/games',
+  validateSchema,
+  validateUniqueName,
+  categoryExists,
+  addGame
+);
 
 export default gamesRouter;

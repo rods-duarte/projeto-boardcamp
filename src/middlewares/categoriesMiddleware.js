@@ -48,3 +48,30 @@ export async function validateUniqueName(req, res, next) {
 
   next();
 }
+
+export async function categoryExists(req, res, next) {
+  const { categoryId } = req.body;
+
+  try {
+    const result = db.query(
+      `--sql
+        SELECT * FROM categories
+        WHERE id = $1
+        `,
+      [categoryId]
+    );
+
+    if (!result.rows.length) {
+      res.sendStatus(400);
+      return;
+    }
+  } catch (err) {
+    console.log(`${ERROR} ${err}`);
+    res.status(500).send({
+      message: 'Internal error',
+      details: err,
+    });
+  }
+
+  next();
+}
