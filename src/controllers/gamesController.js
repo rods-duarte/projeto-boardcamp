@@ -3,7 +3,12 @@ import { ERROR } from '../blueprint/chalkMessages.js';
 
 export async function getGames(req, res) {
   try {
-    const result = await db.query('SELECT * FROM games');
+    const result = await db.query(
+      `--sql
+        SELECT games.*, categories.name AS "categoryName" FROM games
+        JOIN categories ON games."categoryId" = categories.id
+      `
+    );
     res.status(200).send(result.rows);
   } catch (err) {
     console.log(`${ERROR} ${err}`);
